@@ -715,7 +715,7 @@ class WaveformSet(dj.Imported):
         -> probe.ElectrodeConfig.Electrode  
         --- 
         waveform_mean: longblob   # (uV) mean waveform across spikes of the given unit
-        waveforms: blob@ephys_store (uV) (spike x sample) waveforms of a sampling of spikes at the given electrode for the given unit
+        waveforms=null: blob@ephys_store # (uV) (spike x sample) waveforms of a sampling of spikes at the given electrode for the given unit
         """
 
     def make(self, key):
