@@ -392,7 +392,7 @@ class LFP(dj.Imported):
         -> master
         -> probe.ElectrodeConfig.Electrode  
         ---
-        lfp: longblob               # (uV) recorded lfp at this electrode 
+        lfp: longblob@ephys_store  # (uV) recorded lfp at this electrode 
         """
 
     # Only store LFP for every 9th channel, due to high channel density,
@@ -715,7 +715,7 @@ class WaveformSet(dj.Imported):
         -> probe.ElectrodeConfig.Electrode  
         --- 
         waveform_mean: longblob   # (uV) mean waveform across spikes of the given unit
-        waveforms=null: longblob  # (uV) (spike x sample) waveforms of a sampling of spikes at the given electrode for the given unit
+        waveforms=null: longblob@ephys_store (uV) (spike x sample) waveforms of a sampling of spikes at the given electrode for the given unit
         """
 
     def make(self, key):
