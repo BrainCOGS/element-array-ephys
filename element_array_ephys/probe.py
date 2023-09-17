@@ -1,142 +1,134 @@
 """
 Neuropixels Probes
 """
-
 import datajoint as dj
-import numpy as np
+
+from .readers import probe_geometry
+from .readers.probe_geometry import build_electrode_layouts
 
 schema = dj.schema()
 
 
-def activate(schema_name, *, create_schema=True, create_tables=True):
+def activate(
+    schema_name: str,
+    *,
+    create_schema: bool = True,
+    create_tables: bool = True,
+):
+    """Activates the `probe` schemas.
+
+    Args:
+        schema_name (str): A string containing the name of the probe schema.
+        create_schema (bool): If True, schema will be created in the database.
+        create_tables (bool): If True, tables related to the schema will be created in the database.
+
+    Dependencies:
+    Upstream tables:
+        Session: A parent table to ProbeInsertion.
+
+    Functions:
     """
-    activate(schema_name, create_schema=True, create_tables=True)
-        :param schema_name: schema name on the database server to activate the `probe` element
-        :param create_schema: when True (default), create schema in the database if it does not yet exist.
-        :param create_tables: when True (default), create tables in the database if they do not yet exist.
-    """
-    schema.activate(schema_name, create_schema=create_schema, create_tables=create_tables)
+    schema.activate(
+        schema_name, create_schema=create_schema, create_tables=create_tables
+    )
 
     # Add neuropixels probes
-    for probe_type in ('neuropixels 1.0 - 3A', 'neuropixels 1.0 - 3B',
-                       'neuropixels 2.0 - SS', 'neuropixels 2.0 - MS'):
-        ProbeType.create_neuropixels_probe(probe_type)
+    for probe_type in (
+        "neuropixels 1.0 - 3A",
+        "neuropixels 1.0 - 3B",
+        "neuropixels UHD",
+        "neuropixels 2.0 - SS",
+        "neuropixels 2.0 - MS",
+    ):
+        if not (ProbeType & {"probe_type": probe_type}):
+            try:
+                ProbeType.create_neuropixels_probe(probe_type)
+            except dj.errors.DataJointError as e:
+                print(f"Unable to create probe-type: {probe_type}\n{str(e)}")
 
 
 @schema
 class ProbeType(dj.Lookup):
+    """Type of probe.
+
+    Attributes:
+        probe_type (foreign key, varchar (32) ): Name of the probe type.
+    """
+
     definition = """
     # Type of probe, with specific electrodes geometry defined
     probe_type: varchar(32)  # e.g. neuropixels_1.0
     """
 
     class Electrode(dj.Part):
+        """Electrode information for a given probe.
+
+        Attributes:
+            ProbeType (foreign key): ProbeType primary key.
+            electrode (foreign key, int): Electrode index, starting at 0.
+            shank (int): shank index, starting at 0.
+            shank_col (int): column index, starting at 0.
+            shank_row (int): row index, starting at 0.
+            x_coord (float): x-coordinate of the electrode within the probe in micrometers.
+            y_coord (float): y-coordinate of the electrode within the probe in micrometers.
+        """
+
         definition = """
         -> master
         electrode: int       # electrode index, starts at 0
         ---
         shank: int           # shank index, starts at 0, advance left to right
         shank_col: int       # column index, starts at 0, advance left to right
-        shank_row: int       # row index, starts at 0, advance tip to tail
-        x_coord=NULL: float  # (um) x coordinate of the electrode within the probe, (0, 0) is the bottom left corner of the probe
-        y_coord=NULL: float  # (um) y coordinate of the electrode within the probe, (0, 0) is the bottom left corner of the probe
+        shank_row: int       # row index, starts at 0.
+        x_coord=NULL: float  # (um) x coordinate of the electrode within the probe.
+        y_coord=NULL: float  # (um) y coordinate of the electrode within the probe.
         """
 
     @staticmethod
-    def create_neuropixels_probe(probe_type='neuropixels 1.0 - 3A'):
+    def create_neuropixels_probe(probe_type: str = "neuropixels 1.0 - 3A"):
         """
         Create `ProbeType` and `Electrode` for neuropixels probes:
-         1.0 (3A and 3B), 2.0 (SS and MS)
+        + neuropixels 1.0 - 3A
+        + neuropixels 1.0 - 3B
+        + neuropixels UHD
+        + neuropixels 2.0 - SS
+        + neuropixels 2.0 - MS
+
         For electrode location, the (0, 0) is the
          bottom left corner of the probe (ignore the tip portion)
-        Electrode numbering is 1-indexing
+        Electrode numbering is 0-indexing
         """
 
-        def build_electrodes(site_count, col_spacing, row_spacing,
-                             white_spacing, col_count=2,
-                             shank_count=1, shank_spacing=250):
-            """
-            :param site_count: site count per shank
-            :param col_spacing: (um) horrizontal spacing between sites
-            :param row_spacing: (um) vertical spacing between columns
-            :param white_spacing: (um) offset spacing
-            :param col_count: number of column per shank
-            :param shank_count: number of shank
-            :param shank_spacing: spacing between shanks
-            :return:
-            """
-            row_count = int(site_count / col_count)
-            x_coords = np.tile([0, 0 + col_spacing], row_count)
-            x_white_spaces = np.tile([white_spacing, white_spacing, 0, 0], int(row_count / 2))
+        npx_probes_config = probe_geometry.M
+        npx_probes_config["neuropixels 1.0 - 3A"] = npx_probes_config["3A"]
+        npx_probes_config["neuropixels 1.0 - 3B"] = npx_probes_config["NP1010"]
+        npx_probes_config["neuropixels UHD"] = npx_probes_config["NP1100"]
+        npx_probes_config["neuropixels 2.0 - SS"] = npx_probes_config["NP2000"]
+        npx_probes_config["neuropixels 2.0 - MS"] = npx_probes_config["NP2010"]
 
-            x_coords = x_coords + x_white_spaces
-            y_coords = np.repeat(np.arange(row_count) * row_spacing, 2)
-
-            shank_cols = np.tile([0, 1], row_count)
-            shank_rows = np.repeat(range(row_count), 2)
-
-            npx_electrodes = []
-            for shank_no in range(shank_count):
-                npx_electrodes.extend([{'electrode': (site_count * shank_no) + e_id,
-                                        'shank': shank_no,
-                                        'shank_col': c_id,
-                                        'shank_row': r_id,
-                                        'x_coord': x + (shank_no * shank_spacing),
-                                        'y_coord': y}
-                                       for e_id, (c_id, r_id, x, y) in enumerate(
-                    zip(shank_cols, shank_rows, x_coords, y_coords))])
-
-            return npx_electrodes
-
-        # ---- 1.0 3A ----
-        if probe_type == 'neuropixels 1.0 - 3A':
-            electrodes = build_electrodes(site_count=960, col_spacing=32, row_spacing=20,
-                                          white_spacing=16, col_count=2)
-
-            probe_type = {'probe_type': 'neuropixels 1.0 - 3A'}
-            with ProbeType.connection.transaction:
-                ProbeType.insert1(probe_type, skip_duplicates=True)
-                ProbeType.Electrode.insert([{**probe_type, **e} for e in electrodes],
-                                           skip_duplicates=True)
-
-        # ---- 1.0 3B ----
-        if probe_type == 'neuropixels 1.0 - 3B':
-            electrodes = build_electrodes(site_count=960, col_spacing=32, row_spacing=20,
-                                          white_spacing=16, col_count=2)
-
-            probe_type = {'probe_type': 'neuropixels 1.0 - 3B'}
-            with ProbeType.connection.transaction:
-                ProbeType.insert1(probe_type, skip_duplicates=True)
-                ProbeType.Electrode.insert([{**probe_type, **e} for e in electrodes],
-                                           skip_duplicates=True)
-
-        # ---- 2.0 Single shank ----
-        if probe_type == 'neuropixels 2.0 - SS':
-            electrodes = build_electrodes(site_count=1280, col_spacing=32, row_spacing=15,
-                                          white_spacing=0, col_count=2,
-                                          shank_count=1, shank_spacing=250)
-
-            probe_type = {'probe_type': 'neuropixels 2.0 - SS'}
-            with ProbeType.connection.transaction:
-                ProbeType.insert1(probe_type, skip_duplicates=True)
-                ProbeType.Electrode.insert([{**probe_type, **e} for e in electrodes],
-                                           skip_duplicates=True)
-
-        # ---- 2.0 Multi shank ----
-        if probe_type == 'neuropixels 2.0 - MS':
-            electrodes = build_electrodes(site_count=1280, col_spacing=32, row_spacing=15,
-                                          white_spacing=0, col_count=2,
-                                          shank_count=4, shank_spacing=250)
-
-            probe_type = {'probe_type': 'neuropixels 2.0 - MS'}
-            with ProbeType.connection.transaction:
-                ProbeType.insert1(probe_type, skip_duplicates=True)
-                ProbeType.Electrode.insert([{**probe_type, **e} for e in electrodes],
-                                           skip_duplicates=True)
+        probe_type = {"probe_type": probe_type}
+        probe_params = dict(zip(
+                probe_geometry.geom_param_names,
+                npx_probes_config[probe_type["probe_type"]]
+            ))
+        electrode_layouts = probe_geometry.build_npx_probe(
+            **{**probe_params, **probe_type}
+        )
+        with ProbeType.connection.transaction:
+            ProbeType.insert1(probe_type, skip_duplicates=True)
+            ProbeType.Electrode.insert(electrode_layouts, skip_duplicates=True)
 
 
 @schema
 class Probe(dj.Lookup):
+    """Represent a physical probe with unique ID
+
+    Attributes:
+        probe (foreign key, varchar(32) ): Unique ID for this model of the probe.
+        ProbeType (dict): ProbeType entry.
+        probe_comment ( varchar(1000) ): Comment about this model of probe.
+    """
+
     definition = """
     # Represent a physical probe with unique identification
     probe: varchar(32)  # unique identifier for this model of probe (e.g. serial number)
@@ -148,15 +140,30 @@ class Probe(dj.Lookup):
 
 @schema
 class ElectrodeConfig(dj.Lookup):
+    """Electrode configuration setting on a probe.
+
+    Attributes:
+        electrode_config_hash (foreign key, uuid): unique index for electrode configuration.
+        ProbeType (dict): ProbeType entry.
+        electrode_config_name ( varchar(4000) ): User-friendly name for this electrode configuration.
+    """
+
     definition = """
     # The electrode configuration setting on a given probe
-    electrode_config_hash: uuid  
+    electrode_config_hash: uuid
     ---
     -> ProbeType
     electrode_config_name: varchar(4000)  # user friendly name
     """
 
     class Electrode(dj.Part):
+        """Electrode included in the recording.
+
+        Attributes:
+            ElectrodeConfig (foreign key): ElectrodeConfig primary key.
+            ProbeType.Electrode (foreign key): ProbeType.Electrode primary key.
+        """
+
         definition = """  # Electrodes selected for recording
         -> master
         -> ProbeType.Electrode
