@@ -174,10 +174,31 @@ class SpikeGLX:
         else:
             raise KeyError(f"Unknown file_type {file_type} - must be 'ap' or 'lf'")
 
-        if file_size != meta.meta["fileSizeBytes"]:
+        expected_file_size = meta.meta.get("fileSizeBytes")
+        if expected_file_size is not None:
+            if file_size != expected_file_size:
+                raise IOError(
+                    f"File size error! {file_path} may be corrupted or in transfer?"
+                )
+            return
+
+        # "fileSizeBytes" is written by SpikeGLX only as one of the last
+        # steps of its shutdown sequence (after computing "fileSHA1"), so a
+        # recording whose acquisition finished normally can still be missing
+        # it if the app was closed/killed before that step completed. Fall
+        # back to a frame-alignment check: a genuinely truncated/corrupted
+        # file will not divide evenly into whole sample frames, whereas a
+        # fully-written recording that only failed to finalize its metadata
+        # will.
+        bytes_per_frame = meta.meta["nSavedChans"] * np.dtype("int16").itemsize
+        if file_size % bytes_per_frame:
             raise IOError(
                 f"File size error! {file_path} may be corrupted or in transfer?"
             )
+        logger.warning(
+            f"{meta.fname} is missing 'fileSizeBytes' (recording may not have"
+            " shut down cleanly) - validated file size by frame alignment instead."
+        )
 
     def compress(self):
         from mtscomp import compress as mts_compress
