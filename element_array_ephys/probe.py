@@ -138,6 +138,7 @@ def create_neuropixels_probe_types():
         "neuropixels 2.0 - MS",
         "2013",
         "NP2004",
+        "NP2014",
     ):
         if not (ProbeType & {"probe_type": probe_type}):
             create_neuropixels_probe(probe_type)
