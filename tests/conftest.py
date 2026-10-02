@@ -1,3 +1,4 @@
+import importlib
 import os
 import pathlib
 
@@ -28,8 +29,39 @@ def dj_config():
     return
 
 
-@pytest.fixture(autouse=True, scope="session")
-def pipeline():
+def _pipeline_unavailable_reason():
+    """Return why the tutorial pipeline can't be built here, or None if it can.
+
+    The pipeline needs the optional `elements` extra and a reachable DataJoint
+    database. Credentials are checked before calling dj.conn() because datajoint
+    prompts on stdin for a missing user/password, which hangs non-interactive
+    runs.
+    """
+    for module in ("element_animal", "element_lab", "element_session"):
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            return f"{module} not installed (install the `elements` extra)"
+    missing = [
+        key
+        for key in ("database.host", "database.user", "database.password")
+        if not dj.config[key]
+    ]
+    if missing:
+        return f"DataJoint database not configured (missing {', '.join(missing)})"
+    try:
+        dj.conn()
+    except Exception as err:  # any connection failure means "no database here"
+        return f"DataJoint database unreachable: {err}"
+    return None
+
+
+@pytest.fixture(scope="session")
+def pipeline(dj_config):
+    reason = _pipeline_unavailable_reason()
+    if reason is not None:
+        pytest.skip(reason)
+
     from . import tutorial_pipeline as pipeline
 
     yield {
