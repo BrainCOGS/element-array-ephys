@@ -10,7 +10,7 @@ readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
 authors = [{ name = "DataJoint", email = "info@datajoint.com" }]
 keywords = ["neuroscience", "electrophysiology", "science", "datajoint"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "datajoint>=0.13.0",
     "ipykernel>=6.0.1",
@@ -83,14 +83,15 @@ constraint-dependencies = [
     # U19-pipeline-python pins datajoint<2.0.0 for the same reason.
     "datajoint<2",
     # datajoint <2.0 imports pkg_resources on every `import datajoint`;
-    # setuptools 83 removed it. <82 matches U19-pipeline-python's pin.
+    # setuptools 82 removed it (datajoint 0.14.9 also declares setuptools<82).
+    # <82 matches U19-pipeline-python's pin.
     "setuptools<82",
 ]
 
 [tool.ruff]
 # Upstream formats with black at 88; keep it so upstream merges stay clean.
 line-length = 88
-target-version = "py310"
+target-version = "py311"
 extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
