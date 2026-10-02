@@ -711,7 +711,7 @@ class OpenEphysKilosortPipeline:
             # if the copied continuous.dat was actually modified,
             # median_subtraction may have been completed - let's check
             if self._module_logfile.exists():
-                with open(self._module_logfile, "r") as f:
+                with open(self._module_logfile) as f:
                     previous_line = ""
                     for line in f.readlines():
                         if line.startswith(

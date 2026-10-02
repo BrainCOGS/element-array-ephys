@@ -175,7 +175,7 @@ class SpikeGLX:
             raise KeyError(f"Unknown file_type {file_type} - must be 'ap' or 'lf'")
 
         if file_size != meta.meta["fileSizeBytes"]:
-            raise IOError(
+            raise OSError(
                 f"File size error! {file_path} may be corrupted or in transfer?"
             )
 

@@ -1,10 +1,12 @@
-from os import path
-from datetime import datetime
-import pathlib
-import pandas as pd
-import numpy as np
-import re
 import logging
+import pathlib
+import re
+from datetime import datetime
+from os import path
+
+import numpy as np
+import pandas as pd
+
 from .utils import convert_to_number
 
 log = logging.getLogger(__name__)
@@ -83,24 +85,24 @@ class Kilosort:
             kilosort_filepath = self._kilosort_dir / kilosort_filename
 
             if not kilosort_filepath.exists():
-                log.debug("skipping {} - does not exist".format(kilosort_filepath))
+                log.debug(f"skipping {kilosort_filepath} - does not exist")
                 continue
 
             base, ext = path.splitext(kilosort_filename)
             self._files[base] = kilosort_filepath
 
             if kilosort_filename == "params.py":
-                log.debug("loading params.py {}".format(kilosort_filepath))
+                log.debug(f"loading params.py {kilosort_filepath}")
                 # params.py is a 'key = val' file
                 params = {}
-                for line in open(kilosort_filepath, "r").readlines():
+                for line in open(kilosort_filepath).readlines():
                     k, v = line.strip("\n").split("=")
                     params[k.strip()] = convert_to_number(v.strip())
-                log.debug("params: {}".format(params))
+                log.debug(f"params: {params}")
                 self._data[base] = params
 
             if ext == ".npy":
-                log.debug("loading npy {}".format(kilosort_filepath))
+                log.debug(f"loading npy {kilosort_filepath}")
                 d = np.load(
                     kilosort_filepath,
                     mmap_mode="r",

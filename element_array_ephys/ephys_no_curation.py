@@ -328,7 +328,7 @@ class EphysRecording(dj.Imported):
                     break
             else:
                 raise FileNotFoundError(
-                    "No SpikeGLX data found for probe insertion: {}".format(key)
+                    f"No SpikeGLX data found for probe insertion: {key}"
                 )
 
             if spikeglx_meta.probe_model in supported_probe_types:
@@ -349,7 +349,7 @@ class EphysRecording(dj.Imported):
             else:
                 raise NotImplementedError(
                     "Processing for neuropixels probe model"
-                    " {} not yet implemented".format(spikeglx_meta.probe_model)
+                    f" {spikeglx_meta.probe_model} not yet implemented"
                 )
 
             self.insert1(
@@ -377,11 +377,11 @@ class EphysRecording(dj.Imported):
                     break
             else:
                 raise FileNotFoundError(
-                    "No Open Ephys data found for probe insertion: {}".format(key)
+                    f"No Open Ephys data found for probe insertion: {key}"
                 )
 
             if not probe_data.ap_meta:
-                raise IOError(
+                raise OSError(
                     'No analog signals found - check "structure.oebin" file or "continuous" directory'
                 )
 
@@ -400,7 +400,7 @@ class EphysRecording(dj.Imported):
             else:
                 raise NotImplementedError(
                     "Processing for neuropixels"
-                    " probe model {} not yet implemented".format(probe_data.probe_model)
+                    f" probe model {probe_data.probe_model} not yet implemented"
                 )
 
             self.insert1(
@@ -1355,9 +1355,7 @@ def get_spikeglx_meta_filepath(ephys_recording_key: dict) -> str:
                     break
             else:
                 raise FileNotFoundError(
-                    "No SpikeGLX data found for probe insertion: {}".format(
-                        ephys_recording_key
-                    )
+                    f"No SpikeGLX data found for probe insertion: {ephys_recording_key}"
                 )
 
     return spikeglx_meta_filepath
