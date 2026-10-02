@@ -20,13 +20,13 @@ try:
     from ecephys_spike_sorting.scripts.create_input_json import createInputJson
     from ecephys_spike_sorting.scripts.helpers import SpikeGLX_utils
 except Exception as e:
-    print(f'Warning: Failed loading "ecephys_spike_sorting" package - {str(e)}')
+    print(f'Warning: Failed loading "ecephys_spike_sorting" package - {e!s}')
 
 # import pykilosort package
 try:
     import pykilosort
 except Exception as e:
-    print(f'Warning: Failed loading "pykilosort" package - {str(e)}')
+    print(f'Warning: Failed loading "pykilosort" package - {e!s}')
 
 
 class SGLXKilosortPipeline:
@@ -713,7 +713,7 @@ class OpenEphysKilosortPipeline:
             if self._module_logfile.exists():
                 with open(self._module_logfile) as f:
                     previous_line = ""
-                    for line in f.readlines():
+                    for line in f:
                         if line.startswith(
                             "ecephys spike sorting: median subtraction module"
                         ) and previous_line.startswith("Total processing time:"):

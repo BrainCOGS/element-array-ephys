@@ -63,7 +63,6 @@ class OpenEphys:
         # extract probe data
         self.probes = self.load_probe_data()
 
-        #
         self._recording_time = None
 
     @property
@@ -75,7 +74,7 @@ class OpenEphys:
             self._recording_time = sorted(recording_datetimes)[0]
         return self._recording_time
 
-    def load_probe_data(self):  # noqa: C901
+    def load_probe_data(self):
         """
         Loop through all Open Ephys "signalchains/processors", identify the processor for
          the Neuropixels probe(s), extract probe info

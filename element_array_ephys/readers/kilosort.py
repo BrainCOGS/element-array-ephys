@@ -95,7 +95,7 @@ class Kilosort:
                 log.debug(f"loading params.py {kilosort_filepath}")
                 # params.py is a 'key = val' file
                 params = {}
-                for line in open(kilosort_filepath).readlines():
+                for line in open(kilosort_filepath):
                     k, v = line.strip("\n").split("=")
                     params[k.strip()] = convert_to_number(v.strip())
                 log.debug(f"params: {params}")

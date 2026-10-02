@@ -26,7 +26,6 @@ def dj_config():
         }
     )
     os.environ["DATABASE_PREFIX"] = "test_"
-    return
 
 
 def _pipeline_unavailable_reason():
@@ -115,23 +114,17 @@ def insert_upstreams(pipeline):
         skip_duplicates=True,
     )
 
-    return
-
 
 @pytest.fixture(scope="session")
 def populate_ephys_recording(pipeline, insert_upstreams):
     ephys = pipeline["ephys"]
     ephys.EphysRecording.populate()
 
-    return
-
 
 @pytest.fixture(scope="session")
 def populate_lfp(pipeline, insert_upstreams):
     ephys = pipeline["ephys"]
     ephys.LFP.populate()
-
-    return
 
 
 @pytest.fixture(scope="session")
@@ -181,8 +174,6 @@ def insert_clustering_task(pipeline, populate_ephys_recording):
         skip_duplicates=True,
     )
 
-    return
-
 
 @pytest.fixture(scope="session")
 def processing(pipeline, insert_clustering_task):
@@ -192,5 +183,3 @@ def processing(pipeline, insert_clustering_task):
     ephys.CuratedClustering.populate()
     ephys.WaveformSet.populate()
     ephys.QualityMetrics.populate()
-
-    return
