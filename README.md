@@ -46,6 +46,23 @@ environment and notebooks to learn the pipeline.
 
 + [Documentation](https://datajoint.com/docs/elements/element-array-ephys)
 
+## Development
+
+This fork uses [uv](https://docs.astral.sh/uv/) and [prek](https://prek.j178.dev/)
+(a drop-in pre-commit runner):
+
+```bash
+uv sync                    # create .venv with the dev dependency group
+uv tool install prek
+prek install               # run the hooks on every commit
+prek run --all-files       # run them once over the whole tree
+uv run pytest
+```
+
+The tutorial-pipeline tests in `tests/test_pipeline.py` skip unless the `elements`
+extra is installed and a DataJoint database is configured (`DJ_HOST`, `DJ_USER`,
+`DJ_PASS`); the import smoke tests always run.
+
 ## Support
 
 + If you need help getting started or run into any errors, please contact our team by
