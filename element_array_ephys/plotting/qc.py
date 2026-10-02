@@ -9,7 +9,7 @@ from scipy.ndimage import gaussian_filter1d
 logger = logging.getLogger("datajoint")
 
 
-class QualityMetricFigs(object):
+class QualityMetricFigs:
     def __init__(
         self,
         ephys: types.ModuleType,
@@ -287,8 +287,8 @@ class QualityMetricFigs(object):
                 fig["layout"].update(
                     annotations=[
                         dict(
-                            xref=f"x{idx+1}",
-                            yref=f"y{idx+1}",
+                            xref=f"x{idx + 1}",
+                            yref=f"y{idx + 1}",
                             text=self._no_data_text,
                             showarrow=False,
                         ),

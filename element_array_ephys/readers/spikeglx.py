@@ -175,7 +175,7 @@ class SpikeGLX:
             raise KeyError(f"Unknown file_type {file_type} - must be 'ap' or 'lf'")
 
         if file_size != meta.meta["fileSizeBytes"]:
-            raise IOError(
+            raise OSError(
                 f"File size error! {file_path} may be corrupted or in transfer?"
             )
 
@@ -297,8 +297,7 @@ class SpikeGLXMeta:
             self.probe_SN = self.meta.get("imProbeSN", self.meta.get("imDatPrb_sn"))
         except KeyError:
             raise KeyError(
-                "Probe Serial Number not found in"
-                ' either "imProbeSN" or "imDatPrb_sn"'
+                'Probe Serial Number not found in either "imProbeSN" or "imDatPrb_sn"'
             )
 
         # Parse channel info
