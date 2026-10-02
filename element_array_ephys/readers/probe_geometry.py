@@ -57,7 +57,7 @@ Electrode coordinate system - from Bill Karsh
 (https://github.com/billkarsh/SpikeGLX/blob/master/Markdown/Metadata_30.md)
 
 The X-origin is the left edge of the shank
-The Y-origin is the center of the bottom-most elecrode row (closest to the tip) 
+The Y-origin is the center of the bottom-most elecrode row (closest to the tip)
 """
 
 

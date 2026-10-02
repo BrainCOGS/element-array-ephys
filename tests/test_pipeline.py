@@ -1,7 +1,8 @@
-import numpy as np
-import pandas as pd
 import datetime
 from uuid import UUID
+
+import numpy as np
+import pandas as pd
 
 
 def test_generate_pipeline(pipeline):
