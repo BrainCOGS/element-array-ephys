@@ -555,7 +555,7 @@ class LFP(dj.Imported):
         -> master
         -> probe.ElectrodeConfig.Electrode
         ---
-        lfp: blob@ephys_store  # (uV) recorded lfp at this electrode 
+        lfp: blob@ephys_store  # (uV) recorded lfp at this electrode
         """
 
     # Only store LFP for every 9th channel, due to high channel density,

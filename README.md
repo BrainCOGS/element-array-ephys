@@ -1,15 +1,15 @@
 # DataJoint Element for Extracellular Electrophysiology
 
-DataJoint Element for extracellular array electrophysiology that processes data 
+DataJoint Element for extracellular array electrophysiology that processes data
 acquired with a polytrode probe
 (e.g. [Neuropixels](https://www.neuropixels.org), Neuralynx) using the
 [SpikeGLX](https://github.com/billkarsh/SpikeGLX) or
-[OpenEphys](https://open-ephys.org/gui) acquisition software and 
+[OpenEphys](https://open-ephys.org/gui) acquisition software and
 [MATLAB-based Kilosort](https://github.com/MouseLand/Kilosort) or [python-based
-Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software. DataJoint 
-Elements collectively standardize and automate data collection and analysis for 
-neuroscience experiments. Each Element is a modular pipeline for data storage and 
-processing with corresponding database tables that can be combined with other Elements 
+Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software. DataJoint
+Elements collectively standardize and automate data collection and analysis for
+neuroscience experiments. Each Element is a modular pipeline for data storage and
+processing with corresponding database tables that can be combined with other Elements
 to assemble a fully functional pipeline. This repository also provides a tutorial
 environment and notebooks to learn the pipeline.
 
@@ -40,7 +40,7 @@ environment and notebooks to learn the pipeline.
      ```bash
      pip install -e .
      ```
-     
+
 + [Interactive tutorial on GitHub
   Codespaces](https://github.com/datajoint/element-array-ephys#interactive-tutorial)
 
