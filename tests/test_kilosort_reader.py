@@ -6,12 +6,6 @@ import pytest
 from element_array_ephys.readers.kilosort import Kilosort
 
 
-@pytest.fixture(autouse=True)
-def pipeline():
-    """Override the conftest's autouse DB pipeline; these are pure reader tests."""
-    return None
-
-
 def _make_kilosort(pc_features=None):
     """Build a Kilosort reader with in-memory data, bypassing file loading.
 
@@ -35,9 +29,7 @@ def _make_kilosort(pc_features=None):
     if pc_features is not None:
         data["spike_templates"] = np.zeros(len(pc_features), dtype=int)
         # (n_spikes, n_pcs, n_feature_channels); only the 1st PC is used
-        data["pc_features"] = np.stack(
-            [pc_features, np.ones_like(pc_features)], axis=1
-        )
+        data["pc_features"] = np.stack([pc_features, np.ones_like(pc_features)], axis=1)
     else:
         data["spike_templates"] = np.array([0, 1])
     ks._data = data
