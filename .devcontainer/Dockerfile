@@ -1,7 +1,7 @@
-FROM python:3.9-slim-bookworm@sha256:a02e9c5406c416c504d6c9a1a306ff4080c3173f1008d192f953bd20382a2d5c
+FROM python:3.12-slim-bookworm@sha256:bc01d00b6417e4b1b01c331db3a14054b4be954e571ef8bf5748aaf64b66e941
 
 ENV PATH /usr/local/bin:$PATH
-ENV PYTHON_VERSION 3.9.25
+ENV PYTHON_VERSION 3.12.15
 
 RUN \
     adduser --system --home /home/vscode --disabled-password --shell /bin/bash vscode && \
@@ -32,7 +32,8 @@ COPY ./ /tmp/element-array-ephys/
 RUN \
     # pipeline dependencies
     apt-get install gcc g++ ffmpeg libsm6 libxext6 -y && \
-    pip install --no-cache-dir -e /tmp/element-array-ephys[elements,tests] && \
+    # datajoint 2 drops dj.schema; setuptools 82+ drops pkg_resources (used by datajoint<2)
+    pip install --no-cache-dir -e "/tmp/element-array-ephys[elements,tests]" "datajoint<2" "setuptools<82" && \
     # clean up
     rm -rf /tmp/element-array-ephys && \
     apt-get clean
