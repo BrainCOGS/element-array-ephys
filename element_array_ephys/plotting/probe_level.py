@@ -81,7 +81,7 @@ def plot_driftmap(
     ax_driftmap.invert_yaxis()
     ax_driftmap.set(
         xlabel="Time (s)",
-        ylabel="Distance from the probe tip ($\mu$m)",
+        ylabel=r"Distance from the probe tip ($\mu$m)",
         ylim=[depth_edges[0], depth_edges[-1]],
     )
 

@@ -63,7 +63,6 @@ class OpenEphys:
         # extract probe data
         self.probes = self.load_probe_data()
 
-        #
         self._recording_time = None
 
     @property
@@ -75,7 +74,7 @@ class OpenEphys:
             self._recording_time = sorted(recording_datetimes)[0]
         return self._recording_time
 
-    def load_probe_data(self):  # noqa: C901
+    def load_probe_data(self):
         """
         Loop through all Open Ephys "signalchains/processors", identify the processor for
          the Neuropixels probe(s), extract probe info
@@ -146,7 +145,7 @@ class OpenEphys:
 
                 assert len(rec._oebin["continuous"]) == len(rec.analog_signals), (
                     f"Mismatch in the number of continuous data"
-                    f' - expecting {len(rec._oebin["continuous"])} (from structure.oebin file),'
+                    f" - expecting {len(rec._oebin['continuous'])} (from structure.oebin file),"
                     f" found {len(rec.analog_signals)} (in continuous folder)"
                 )
 
@@ -193,7 +192,7 @@ class OpenEphys:
                             continue  # not continuous data for the current probe
                     else:
                         raise ValueError(
-                            f'Unable to infer type (AP or LFP) for the continuous data from:\n\t{continuous_info["folder_name"]}'
+                            f"Unable to infer type (AP or LFP) for the continuous data from:\n\t{continuous_info['folder_name']}"
                         )
 
                     if continuous_type == "ap":

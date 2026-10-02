@@ -16,7 +16,7 @@ shank). Such large recording capacity has offered tremendous opportunities for t
 of neurophysiology research, yet this is accompanied by an equally great challenge in
 terms of data and computation management.
 
-[^1]: 
+[^1]:
     Jun, J., Steinmetz, N., Siegle, J. et al. Fully integrated silicon probes for
     high-density recording of neural activity. *Nature* 551, 232–236 (2017).
     [https://doi.org/10.1038/nature24636](https://doi.org/10.1038/nature24636).
@@ -80,7 +80,7 @@ include:
 + [Mesoscale Activity Project (HHMI Janelia)](https://github.com/mesoscale-activity-map):
   [https://github.com/mesoscale-activity-map/map-ephys](https://github.com/mesoscale-activity-map/map-ephys)
 
-+ Moser Group (Norwegian University of Science and Technology): see 
++ Moser Group (Norwegian University of Science and Technology): see
   [pipeline design](https://moser-pipelines.readthedocs.io/en/latest/ephys/overview.html)
 
 + Andreas Tolias Lab (Baylor College of Medicine)
@@ -167,7 +167,7 @@ Tables for storing probe or unit-level visualization results.
 ## Element Development
 
 Through our interviews and direct collaboration on the precursor projects, we identified
-the common motifs to create the 
+the common motifs to create the
 [Array Electrophysiology Element](https://github.com/datajoint/element-array-ephys).
 
 Major features of the Array Electrophysiology Element include:
@@ -180,11 +180,11 @@ Major features of the Array Electrophysiology Element include:
 
     + Probe-insertion, ephys-recordings, LFP extraction, clusterings, curations, sorted
       units and the associated data (e.g. spikes, waveforms, etc.).
-    
+
     + Store/track/manage different curations of the spike sorting results - supporting
       both curated clustering and kilosort triggered clustering (i.e., `no_curation`).
 
-+ Ingestion support for data acquired with SpikeGLX and OpenEphys acquisition systems. 
++ Ingestion support for data acquired with SpikeGLX and OpenEphys acquisition systems.
 + Ingestion support for spike sorting outputs from Kilosort.
 + Triggering support for workflow integrated Kilosort processing.
 + Sample data and complete test suite for quality assurance.
@@ -197,7 +197,7 @@ publish results on [DANDI Archive](https://dandiarchive.org/).
 [NWB](https://www.nwb.org/), as an organization, is dedicated to standardizing data
 formats and maximizing interoperability across tools for neurophysiology. For more
 information on uploading NWB files to DANDI within the DataJoint Elements ecosystem see
-the corresponding notebook on the [tutorials page](./tutorials/index.md). 
+the corresponding notebook on the [tutorials page](./tutorials/index.md).
 
 To use the export functionality with additional related dependencies, install the
 Element with the `nwb` option as follows:
@@ -215,7 +215,7 @@ NeurodataWithoutBorders format integrated
 [https://github.com/LorenFrankLab/nwb_datajoint](https://github.com/LorenFrankLab/nwb_datajoint).
 
 Future additions to this element will add functionality to support large (> 48
-hours) neuropixel recordings via an overlapping segmented processing approach. 
+hours) neuropixel recordings via an overlapping segmented processing approach.
 
 Further development of this Element is community driven. Upon user requests we will
 continue adding features to this Element.

@@ -43,9 +43,9 @@ def activate(
 
     if isinstance(linking_module, str):
         linking_module = importlib.import_module(linking_module)
-    assert inspect.ismodule(
-        linking_module
-    ), "The argument 'dependency' must be a module's name or a module"
+    assert inspect.ismodule(linking_module), (
+        "The argument 'dependency' must be a module's name or a module"
+    )
 
     global _linking_module
     _linking_module = linking_module
@@ -226,7 +226,7 @@ class EphysRecording(dj.Imported):
                     break
             else:
                 raise FileNotFoundError(
-                    "No SpikeGLX data found for probe insertion: {}".format(key)
+                    f"No SpikeGLX data found for probe insertion: {key}"
                 )
 
             if spikeglx_meta.probe_model in supported_probe_types:
@@ -247,7 +247,7 @@ class EphysRecording(dj.Imported):
             else:
                 raise NotImplementedError(
                     "Processing for neuropixels probe model"
-                    " {} not yet implemented".format(spikeglx_meta.probe_model)
+                    f" {spikeglx_meta.probe_model} not yet implemented"
                 )
 
             self.insert1(
@@ -275,7 +275,7 @@ class EphysRecording(dj.Imported):
                     break
             else:
                 raise FileNotFoundError(
-                    "No Open Ephys data found for probe insertion: {}".format(key)
+                    f"No Open Ephys data found for probe insertion: {key}"
                 )
 
             if probe_data.probe_model in supported_probe_types:
@@ -293,7 +293,7 @@ class EphysRecording(dj.Imported):
             else:
                 raise NotImplementedError(
                     "Processing for neuropixels"
-                    " probe model {} not yet implemented".format(probe_data.probe_model)
+                    f" probe model {probe_data.probe_model} not yet implemented"
                 )
 
             self.insert1(
@@ -392,8 +392,7 @@ class PreClusterParamSet(dj.Lookup):
                 return
             else:  # If not same name: human error, trying to add the same paramset with different name
                 raise dj.DataJointError(
-                    "The specified param-set"
-                    " already exists - paramset_idx: {}".format(existing_paramset_idx)
+                    f"The specified param-set already exists - paramset_idx: {existing_paramset_idx}"
                 )
         else:
             cls.insert1(param_dict)
@@ -505,16 +504,15 @@ class PreCluster(dj.Imported):
                         break
                 else:
                     raise FileNotFoundError(
-                        "No SpikeGLX data found for probe insertion: {}".format(key)
+                        f"No SpikeGLX data found for probe insertion: {key}"
                     )
             else:
                 raise NotImplementedError(
-                    f"Pre-clustering analysis of {acq_software}" "is not yet supported."
+                    f"Pre-clustering analysis of {acq_software}is not yet supported."
                 )
         elif task_mode == "trigger":
             raise NotImplementedError(
-                "Automatic triggering of"
-                " pre-clustering analysis is not yet supported."
+                "Automatic triggering of pre-clustering analysis is not yet supported."
             )
         else:
             raise ValueError(f"Unknown task mode: {task_mode}")
@@ -555,7 +553,7 @@ class LFP(dj.Imported):
         -> master
         -> probe.ElectrodeConfig.Electrode
         ---
-        lfp: blob@ephys_store  # (uV) recorded lfp at this electrode 
+        lfp: blob@ephys_store  # (uV) recorded lfp at this electrode
         """
 
     # Only store LFP for every 9th channel, due to high channel density,
@@ -745,8 +743,7 @@ class ClusteringParamSet(dj.Lookup):
                 return
             else:  # If not same name: human error, trying to add the same paramset with different name
                 raise dj.DataJointError(
-                    "The specified param-set"
-                    " already exists - paramset_idx: {}".format(existing_paramset_idx)
+                    f"The specified param-set already exists - paramset_idx: {existing_paramset_idx}"
                 )
         else:
             cls.insert1(param_dict)
@@ -828,7 +825,7 @@ class Clustering(dj.Imported):
             creation_time, _, _ = kilosort.extract_clustering_info(kilosort_dir)
         elif task_mode == "trigger":
             raise NotImplementedError(
-                "Automatic triggering of" " clustering analysis is not yet supported"
+                "Automatic triggering of clustering analysis is not yet supported"
             )
         else:
             raise ValueError(f"Unknown task mode: {task_mode}")
@@ -1330,9 +1327,7 @@ def get_spikeglx_meta_filepath(ephys_recording_key: dict) -> str:
                     break
             else:
                 raise FileNotFoundError(
-                    "No SpikeGLX data found for probe insertion: {}".format(
-                        ephys_recording_key
-                    )
+                    f"No SpikeGLX data found for probe insertion: {ephys_recording_key}"
                 )
 
     return spikeglx_meta_filepath
