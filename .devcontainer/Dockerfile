@@ -1,10 +1,10 @@
-FROM python:3.9-slim-bookworm@sha256:a02e9c5406c416c504d6c9a1a306ff4080c3173f1008d192f953bd20382a2d5c
+FROM python:3.9-slim@sha256:5f0192a4f58a6ce99f732fe05e3b3d00f12ae62e183886bca3ebe3d202686c7f
 
 ENV PATH /usr/local/bin:$PATH
-ENV PYTHON_VERSION 3.9.25
+ENV PYTHON_VERSION 3.9.17
 
 RUN \
-    adduser --system --home /home/vscode --disabled-password --shell /bin/bash vscode && \
+    adduser --system --disabled-password --shell /bin/bash vscode && \
     # install docker
     apt-get update && \
     apt-get install ca-certificates curl gnupg lsb-release -y && \
