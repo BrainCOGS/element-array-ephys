@@ -297,8 +297,7 @@ class SpikeGLXMeta:
             self.probe_SN = self.meta.get("imProbeSN", self.meta.get("imDatPrb_sn"))
         except KeyError:
             raise KeyError(
-                "Probe Serial Number not found in"
-                ' either "imProbeSN" or "imDatPrb_sn"'
+                'Probe Serial Number not found in either "imProbeSN" or "imDatPrb_sn"'
             )
 
         # Parse channel info

@@ -74,7 +74,7 @@ class Kilosort:
                 missing_files.append(f)
         if missing_files:
             raise FileNotFoundError(
-                f"Kilosort files missing in ({self._kilosort_dir}):" f" {missing_files}"
+                f"Kilosort files missing in ({self._kilosort_dir}): {missing_files}"
             )
 
     def _load(self):

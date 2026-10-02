@@ -50,9 +50,9 @@ def activate(
 
     if isinstance(linking_module, str):
         linking_module = importlib.import_module(linking_module)
-    assert inspect.ismodule(
-        linking_module
-    ), "The argument 'dependency' must be a module's name or a module"
+    assert inspect.ismodule(linking_module), (
+        "The argument 'dependency' must be a module's name or a module"
+    )
 
     global _linking_module
     _linking_module = linking_module
@@ -746,8 +746,8 @@ class ClusteringTask(dj.Manual):
         output_dir = (
             processed_dir
             / session_dir.relative_to(root_dir)
-            / f'probe_{key["insertion_number"]}'
-            / f'{method}_{key["paramset_idx"]}'
+            / f"probe_{key['insertion_number']}"
+            / f"{method}_{key['paramset_idx']}"
         )
 
         if mkdir:
@@ -867,7 +867,7 @@ class Clustering(dj.Imported):
                             npx_input_dir=spikeglx_meta_filepath.parent,
                             ks_output_dir=kilosort_dir,
                             params=params,
-                            KS2ver=f'{Decimal(clustering_method.replace("kilosort", "")):.1f}',
+                            KS2ver=f"{Decimal(clustering_method.replace('kilosort', '')):.1f}",
                             run_CatGT=run_CatGT,
                         )
                         run_kilosort.run_modules()
@@ -897,7 +897,7 @@ class Clustering(dj.Imported):
                             npx_input_dir=oe_probe.recording_info["recording_files"][0],
                             ks_output_dir=kilosort_dir,
                             params=params,
-                            KS2ver=f'{Decimal(clustering_method.replace("kilosort", "")):.1f}',
+                            KS2ver=f"{Decimal(clustering_method.replace('kilosort', '')):.1f}",
                         )
                         run_kilosort.run_modules()
             else:
@@ -1567,9 +1567,7 @@ def get_recording_channels_details(ephys_recording_key: dict) -> np.array:
     ) = (
         probe.ElectrodeConfig.Electrode * probe.ProbeType.Electrode
         & electrode_config_key
-    ).fetch(
-        "electrode", "x_coord", "y_coord", "shank"
-    )
+    ).fetch("electrode", "x_coord", "y_coord", "shank")
     channels_details["sample_rate"] = sample_rate
     channels_details["num_channels"] = len(channels_details["channel_ind"])
 

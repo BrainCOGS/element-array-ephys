@@ -43,9 +43,9 @@ def activate(
 
     if isinstance(linking_module, str):
         linking_module = importlib.import_module(linking_module)
-    assert inspect.ismodule(
-        linking_module
-    ), "The argument 'dependency' must be a module's name or a module"
+    assert inspect.ismodule(linking_module), (
+        "The argument 'dependency' must be a module's name or a module"
+    )
 
     global _linking_module
     _linking_module = linking_module
@@ -392,8 +392,9 @@ class PreClusterParamSet(dj.Lookup):
                 return
             else:  # If not same name: human error, trying to add the same paramset with different name
                 raise dj.DataJointError(
-                    "The specified param-set"
-                    " already exists - paramset_idx: {}".format(existing_paramset_idx)
+                    "The specified param-set already exists - paramset_idx: {}".format(
+                        existing_paramset_idx
+                    )
                 )
         else:
             cls.insert1(param_dict)
@@ -509,12 +510,11 @@ class PreCluster(dj.Imported):
                     )
             else:
                 raise NotImplementedError(
-                    f"Pre-clustering analysis of {acq_software}" "is not yet supported."
+                    f"Pre-clustering analysis of {acq_software}is not yet supported."
                 )
         elif task_mode == "trigger":
             raise NotImplementedError(
-                "Automatic triggering of"
-                " pre-clustering analysis is not yet supported."
+                "Automatic triggering of pre-clustering analysis is not yet supported."
             )
         else:
             raise ValueError(f"Unknown task mode: {task_mode}")
@@ -745,8 +745,9 @@ class ClusteringParamSet(dj.Lookup):
                 return
             else:  # If not same name: human error, trying to add the same paramset with different name
                 raise dj.DataJointError(
-                    "The specified param-set"
-                    " already exists - paramset_idx: {}".format(existing_paramset_idx)
+                    "The specified param-set already exists - paramset_idx: {}".format(
+                        existing_paramset_idx
+                    )
                 )
         else:
             cls.insert1(param_dict)
@@ -828,7 +829,7 @@ class Clustering(dj.Imported):
             creation_time, _, _ = kilosort.extract_clustering_info(kilosort_dir)
         elif task_mode == "trigger":
             raise NotImplementedError(
-                "Automatic triggering of" " clustering analysis is not yet supported"
+                "Automatic triggering of clustering analysis is not yet supported"
             )
         else:
             raise ValueError(f"Unknown task mode: {task_mode}")
