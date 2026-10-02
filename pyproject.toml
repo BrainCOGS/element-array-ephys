@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "element-array-ephys"
+dynamic = ["version"]
+description = "Extracellular Array Electrophysiology DataJoint Element"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MIT" }
+authors = [{ name = "DataJoint", email = "info@datajoint.com" }]
+keywords = ["neuroscience", "electrophysiology", "science", "datajoint"]
+requires-python = ">=3.10"
+dependencies = [
+    "datajoint>=0.13.0",
+    "ipykernel>=6.0.1",
+    "ipywidgets",
+    "openpyxl",
+    "plotly",
+    "seaborn",
+    "spikeinterface",
+    "scikit-image>=0.20",
+    "nbformat>=4.2.0",
+    "pyopenephys>=1.1.6",
+]
+
+[project.optional-dependencies]
+elements = [
+    "element-animal @ git+https://github.com/datajoint/element-animal.git",
+    "element-event @ git+https://github.com/datajoint/element-event.git",
+    "element-interface @ git+https://github.com/datajoint/element-interface.git",
+    "element-lab @ git+https://github.com/datajoint/element-lab.git",
+    "element-session @ git+https://github.com/datajoint/element-session.git",
+]
+nwb = ["dandi", "neuroconv[ecephys]", "pynwb"]
+tests = ["pre-commit", "pytest", "pytest-cov"]
+
+[project.urls]
+Homepage = "https://github.com/datajoint/element-array-ephys"
+Source = "https://github.com/BrainCOGS/element-array-ephys"
+
+[dependency-groups]
+dev = [
+    # Not a runtime dependency in the metadata (upstream only lists it under the
+    # `elements` extra), but every ephys module imports it, so the import smoke
+    # test needs it. Consumers such as U19-pipeline-python install it themselves.
+    "element-interface @ git+https://github.com/datajoint/element-interface.git",
+    "pytest>=8",
+    "pytest-cov>=5",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "element_array_ephys.version.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["element_array_ephys*"]
+
+[tool.uv]
+# Supply-chain quarantine: ignore anything published in the last 7 days when
+# resolving. A compromised release is usually caught and yanked within days, so
+# waiting a week costs little and skips the window when a malicious version is
+# most likely to still be up. uv re-evaluates this relative value on every
+# resolution, so the window rolls forward on its own. "7 days" is the documented
+# friendly-duration form (ISO 8601 "P7D" is equivalent).
+#
+# Consequence to expect: immediately after an upstream release, `uv lock` will
+# decline to pick it up until it is a week old. That is the feature working. To
+# take a fresh release deliberately, run
+#   uv lock --exclude-newer <a timestamp after that upload>
+# or add a scoped exemption via `exclude-newer-package`.
+exclude-newer = "7 days"
+
+# `uv audit` is still gated behind a preview flag. Declaring it here means the
+# command runs without `--preview-features audit-command` on the command line,
+# so local runs and the CI audit job invoke it identically.
+preview-features = ["audit-command"]
+
+# Constraints for this repo's own dev/CI environment only; they are not part of
+# the published metadata, so downstream installs are unaffected.
+constraint-dependencies = [
+    # The code uses the datajoint 0.14 API (dj.schema(), dj_local_conf.json);
+    # datajoint 2.x removed dj.schema, so `import element_array_ephys` fails.
+    # U19-pipeline-python pins datajoint<2.0.0 for the same reason.
+    "datajoint<2",
+    # datajoint <2.0 imports pkg_resources on every `import datajoint`;
+    # setuptools 83 removed it. <82 matches U19-pipeline-python's pin.
+    "setuptools<82",
+]
+
+[tool.ruff]
+# Upstream formats with black at 88; keep it so upstream merges stay clean.
+line-length = 88
+target-version = "py310"
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra"]
