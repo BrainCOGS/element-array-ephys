@@ -45,8 +45,8 @@ dev = [
     # `elements` extra), but every ephys module imports it, so the import smoke
     # test needs it. Consumers such as U19-pipeline-python install it themselves.
     "element-interface @ git+https://github.com/datajoint/element-interface.git",
-    "pytest>=8",
-    "pytest-cov>=5",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
 ]
 
 [tool.setuptools.dynamic]
@@ -159,5 +159,27 @@ ignore = [
 "element_array_ephys/plotting/unit_level.py" = ["FURB136"]
 
 [tool.pytest.ini_options]
+minversion = "9.0"
+# pytest 9 reads pyproject.toml natively and requires "args"-type options to be
+# TOML lists. No --doctest-modules: importing the ephys modules for doctests
+# would declare DataJoint schemas, and there are no doctests to run.
+addopts = [
+    "-ra",
+    "--showlocals",
+    "--strict-config",
+    "--strict-markers",
+    "--import-mode=importlib",
+]
+xfail_strict = true
+log_level = "INFO"
 testpaths = ["tests"]
-addopts = ["-ra"]
+filterwarnings = [
+    "error",
+    # setuptools>=81 raises this as a UserWarning when datajoint<2 imports
+    # pkg_resources, so the category stays unpinned or every test errors at
+    # collection. Belongs to datajoint, not this repo.
+    "ignore:pkg_resources is deprecated as an API",
+    # datajoint calls pyparsing APIs that pyparsing itself deprecated
+    # (delimitedList, setResultsName, ...) at import time.
+    "ignore::pyparsing.warnings.PyparsingDeprecationWarning",
+]

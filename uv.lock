@@ -1679,8 +1679,8 @@ provides-extras = ["elements", "nwb", "tests"]
 [package.metadata.requires-dev]
 dev = [
     { name = "element-interface", git = "https://github.com/datajoint/element-interface.git" },
-    { name = "pytest", specifier = ">=8" },
-    { name = "pytest-cov", specifier = ">=5" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pytest-cov", specifier = ">=7.1.0" },
 ]
 
 [[package]]
