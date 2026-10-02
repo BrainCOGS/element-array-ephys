@@ -95,6 +95,21 @@ extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "I", "UP", "B"]
+ignore = [
+    "B905",  # zip(strict=) would raise on length mismatches the code tolerates today
+    "B904",  # `raise ... from err` changes the exception chain callers see
+    "B006",  # mutable defaults: changing signatures is a behavior change
+    "B007",  # unused loop vars: some are read after the loop; renaming is upstream churn
+    "B028",  # warnings stacklevel changes where users see the warning
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Public re-exports (`element_array_ephys.ephys`, `probe.build_electrode_layouts`).
+"element_array_ephys/__init__.py" = ["F401"]
+"element_array_ephys/probe.py" = ["F401"]
+# DataJoint resolves Subject, Lab, Experimenter, ... from this module's namespace
+# via linking_module=__name__, so the "unused" imports are load-bearing.
+"tests/tutorial_pipeline.py" = ["F401", "F822"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
