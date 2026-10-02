@@ -174,9 +174,21 @@ class Kilosort:
             # ycoords of those channels?
             spk_feature_ycoord = ycoords[spk_feature_ind]
             # center of mass is sum(coords.*features)/sum(features)
-            self._data["spike_depths"] = np.sum(
-                spk_feature_ycoord * pc_features**2, axis=1
-            ) / np.sum(pc_features**2, axis=1)
+            # spikes with no positive 1st-PC feature have zero total weight,
+            # so their depth is undefined and left as NaN
+            weights = np.sum(pc_features**2, axis=1)
+            no_weight = weights == 0
+            if no_weight.any():
+                log.info(
+                    f"{no_weight.sum()} of {len(weights)} spikes have no positive"
+                    " 1st-PC feature; their spike depths are set to NaN"
+                )
+            self._data["spike_depths"] = np.divide(
+                np.sum(spk_feature_ycoord * pc_features**2, axis=1),
+                weights,
+                out=np.full(weights.shape, np.nan),
+                where=~no_weight,
+            )
         else:
             self._data["spike_depths"] = None
 
