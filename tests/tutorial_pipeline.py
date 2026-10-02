@@ -1,17 +1,19 @@
 import os
 import pathlib
+
 import datajoint as dj
+import element_interface
 from element_animal import subject
 from element_animal.subject import Subject
-from element_array_ephys import probe, ephys_no_curation as ephys, ephys_report
 from element_lab import lab
-from element_lab.lab import Lab, Location, Project, Protocol, Source, User
 from element_lab.lab import Device as Equipment
+from element_lab.lab import Lab, Location, Project, Protocol, Source, User
 from element_lab.lab import User as Experimenter
 from element_session import session_with_datetime as session
 from element_session.session_with_datetime import Session
-import element_interface
 
+from element_array_ephys import ephys_no_curation as ephys
+from element_array_ephys import ephys_report, probe
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}
