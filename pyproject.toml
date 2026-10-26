@@ -72,6 +72,12 @@ include = ["element_array_ephys*"]
 #   uv lock --exclude-newer <a timestamp after that upload>
 # or add a scoped exemption via `exclude-newer-package`.
 exclude-newer = "7 days"
+# certifi 2026.10.19 (uploaded 2026-10-20) drops the emSign roots whose
+# intermediate keys were compromised (PYSEC-2026-4320), which fails `uv audit`.
+# virtualenv 21.14.13 (uploaded 2026-10-22) fixes the last open virtualenv
+# advisory. Both are taken before the week is up; drop each entry once that
+# release is older than the window.
+exclude-newer-package = { certifi = "2026-10-21T00:00:00Z", virtualenv = "2026-10-23T00:00:00Z" }
 
 # `uv audit` is still gated behind a preview flag. Declaring it here means the
 # command runs without `--preview-features audit-command` on the command line,
